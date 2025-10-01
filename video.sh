@@ -6,6 +6,7 @@ COMM="./comm"                     # comm executable (must be executable)
 CAPTURE="./capture"               # capture executable
 FFMPEG_BIN="${FFMPEG_BIN:-ffmpeg}"
 TMP_PREFIX="tmp_"
+COMM_WAIT_TIMEOUT=1               # seconds to wait for comm to exit after capture ends
 
 
 # Start comm in background (if it exists)

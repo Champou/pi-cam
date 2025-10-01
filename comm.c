@@ -62,7 +62,7 @@ static int set_system_time(struct tm *tm_val) {
 
 //TODO : Insert other needed Settings functions here and use them in process_message
 ///  @note example message  that can be Decoded:  {"time":"2023-10-05 14:30:00"}
-static void process_message(const char *msg) 
+static int process_message(const char *msg) 
 {
     //time 
     //fetch "time" key from JSON and set system time
@@ -71,8 +71,11 @@ static void process_message(const char *msg)
     if (parse_datetime(msg, &tm_val) == 0) {
         if (set_system_time(&tm_val) == 0) {
             printf("System time updated: %s\n", msg);
+            return EXIT_SUCCESS;
         }
     }
+
+    return EXIT_FAILURE;
 }
 
 
@@ -81,7 +84,12 @@ static void _atexit() {
     uart_close();
 } 
 
-
+/// @brief Fetches UART messages, validates JSON, and processes them
+/// @details Continuously reads from UART, accumulates data, extracts messages
+/// between START and END delimiters, validates JSON format, and processes valid messages.
+/// @note Adjust START_DELIM and END_DELIM as needed for your message format.
+/// @note Uses uart/uart.h for UART operations and util/json_wrapper.h for JSON parsing
+/// @return EXIT_SUCCESS on successful processing
 int main() {
     const char *uart_device = "/dev/ttyS0";  // change as needed
     int baudrate = B115200;
@@ -91,7 +99,7 @@ int main() {
 
     // Open UART
     if (uart_open(uart_device, baudrate) != 0) 
-        return 1;
+        return EXIT_FAILURE;
 
     char buffer[READ_BUFFER_SIZE];   // accumulation buffer
     int buf_len = 0;
@@ -131,7 +139,10 @@ int main() {
                 //check json validity
                 if (json_validate(msg)) 
                 {
-                    process_message(msg);
+                    if (process_message(msg) == EXIT_SUCCESS) 
+                    {
+                        return EXIT_SUCCESS;
+                    } 
                 }
 
                 // remove processed message from buffer
@@ -143,5 +154,5 @@ int main() {
         nanosleep(&ts, NULL);
     }
 
-    return 0;
+    return EXIT_FAILURE;
 }
