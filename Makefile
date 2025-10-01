@@ -2,8 +2,8 @@
 TARGET    := capture
 SRC       := capture.c
 
-TARGETfilename    := filename
-SRCfilename       := filename.c uart/uart.c
+TARGETfilename    := comm
+SRCfilename       := comm.c uart/uart.c util/cJSON/cJSON.c util/json_wrapper.c
 
 # Default: build for host machine
 CC        ?= gcc

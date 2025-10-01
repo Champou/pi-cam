@@ -19,7 +19,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "uart/uart.h"
-#include "json_wrapper.h"
+#include "util/json_wrapper.h"
 
 
 #define READ_BUFFER_SIZE 512        // accumulation of message buffer size
