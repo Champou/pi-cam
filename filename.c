@@ -1,14 +1,18 @@
+#define _XOPEN_SOURCE // for strptime
+#define _POSIX_C_SOURCE 200809L // for clock_settime
+
+#include <time.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <time.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "uart.h"
+#include "uart/uart.h"
 
 
 #define READ_BUFFER_SIZE 512
@@ -62,6 +66,8 @@ int main() {
     char buffer[512];   // accumulation buffer
     int buf_len = 0;
 
+    struct timespec ts = {0, 100000000}; // 0s + 100ms, time for nanosleep
+
     while (1) {
         char temp[64];
         int n = uart_read(temp, sizeof(temp));
@@ -81,12 +87,15 @@ int main() {
             char *end_ptr   = strstr(buffer, END_DELIM);
 
             //complete message found
-            if (start_ptr && end_ptr && start_ptr < end_ptr) {
+            if (start_ptr && end_ptr && start_ptr < end_ptr) 
+            {
+                // extract message between delimiters
                 int msg_len = end_ptr - (start_ptr + strlen(START_DELIM));
                 char msg[MAX_MESSAGE_SIZE];
                 if (msg_len >= (int)sizeof(msg)) msg_len = sizeof(msg) - 1;
                 strncpy(msg, start_ptr + strlen(START_DELIM), msg_len);
                 msg[msg_len] = '\0';
+
 
                 struct tm tm_val = {0};
                 if (parse_datetime(msg, &tm_val) == 0) 
@@ -102,7 +111,8 @@ int main() {
                 buf_len -= (end_ptr + strlen(END_DELIM) - buffer);
             }
         }
-        usleep(100000); // 100ms
+
+        nanosleep(&ts, NULL);
     }
 
     return 0;

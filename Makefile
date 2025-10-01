@@ -2,6 +2,9 @@
 TARGET    := capture
 SRC       := capture.c
 
+TARGETfilename    := filename
+SRCfilename       := filename.c uart/uart.c
+
 # Default: build for host machine
 CC        ?= gcc
 CFLAGS    ?= -O3 -flto -ffast-math
@@ -25,7 +28,8 @@ all: host
 
 # Build for current machine
 host:
-	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRC) -o $(TARGET)
+	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRC) -o $(TARGET) &&  \
+	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRCfilename) -o $(TARGETfilename)
 
 # Cross-compile for Raspberry Pi Zero 2 W
 pi:
@@ -33,5 +37,5 @@ pi:
 
 # Remove build artifacts
 clean:
-	rm -f $(TARGET) $(TARGET)-pi
+	rm -f $(TARGET) $(TARGET)-pi $(TARGETfilename)
 # ========= END =========
