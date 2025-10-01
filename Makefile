@@ -2,8 +2,8 @@
 TARGET    := capture
 SRC       := capture.c
 
-TARGETfilename    := comm
-SRCfilename       := comm.c uart/uart.c util/cJSON/cJSON.c util/json_wrapper.c
+TARGET_comm    := comm
+SRC_comm       := comm.c uart/uart.c util/cJSON/cJSON.c util/json_wrapper.c
 
 # Default: build for host machine
 CC        ?= gcc
@@ -29,13 +29,14 @@ all: host
 # Build for current machine
 host:
 	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRC) -o $(TARGET) &&  \
-	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRCfilename) -o $(TARGETfilename)
+	$(CC) $(CFLAGS) $(HOST_CFLAGS) $(SRC_comm) -o $(TARGET_comm)
 
 # Cross-compile for Raspberry Pi Zero 2 W
 pi:
 	$(PI_CC) $(PI_CFLAGS) $(SRC) -o $(TARGET)-pi
+	$(PI_CC) $(PI_CFLAGS) $(SRC_comm) -o $(TARGET_comm)-pi
 
 # Remove build artifacts
 clean:
-	rm -f $(TARGET) $(TARGET)-pi $(TARGETfilename)
+	rm -f $(TARGET) $(TARGET)-pi $(TARGET_comm) $(TARGET_comm)-pi
 # ========= END =========
