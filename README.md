@@ -1,4 +1,4 @@
-===========================
+
 PROJECT SETUP
 ===========================
 This project uses Makefile for compilation.
@@ -8,7 +8,7 @@ All compilation options for cross-compile are there :
 - make clean (clean project outputs)
 - make host (build for host machine nb:used only for testing, as the code will run on rpi)
 
-===========================
+
 PROJECT Architechture
 ===========================
 - capture : interface with camera and fetch frames, push camra data out.
