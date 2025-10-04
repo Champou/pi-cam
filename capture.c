@@ -89,9 +89,12 @@ static void PrintSetup(int fd_vid)
     memset(&fmt, 0, sizeof(fmt));
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (ioctl(fd_vid, VIDIOC_G_FMT, &fmt) < 0) {
+    if (ioctl(fd_vid, VIDIOC_G_FMT, &fmt) < 0) 
+    {
         perror("VIDIOC_G_FMT");
-    } else {
+    } 
+    else if(verbose)
+    {
         printf("Format:\n");
         printf("  Width: %u\n", fmt.fmt.pix.width);
         printf("  Height: %u\n", fmt.fmt.pix.height);
@@ -258,11 +261,14 @@ int main(int argc, char *argv[])
 
     // Set format ; Declare, Set format, Apply format to io
     struct v4l2_format fmt = {0};
-    if (SetupFormat(&fmt, 640, 480) < 0) 
+    if (SetupFormat(&fmt, 1280, 720) < 0) 
         { perror("SetupFormat Failed"); return 1; }
 
+    //validate that format has been applied correctly
     if (ioctl(fd, VIDIOC_S_FMT, &fmt) < 0) 
         { perror("VIDIOC_S_FMT"); return 1; }
+    if (ioctl(fd, VIDIOC_G_FMT, &fmt) < 0) 
+        { perror("VIDIOC_G_FMT"); return 1; }
      
     // Set frame rate
     if (SetupFrameRate(fd, 1, 30) < 0)
@@ -290,8 +296,8 @@ int main(int argc, char *argv[])
     if (ioctl(fd, VIDIOC_STREAMON, &type) < 0) { perror("VIDIOC_STREAMON"); return 1; }
 
 
-    // Capture loop (grab 100 frames)   
-    if (Capture(fd, 100, buffers) < 0) 
+    // Capture loop (grab 300 frames)   
+    if (Capture(fd, 300, buffers) < 0) 
         {perror("Capture failed"); return 1;}
 
 

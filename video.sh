@@ -2,11 +2,12 @@
 set -u
 
 # Configuration
-COMM="./comm-pi"                     # comm executable (must be executable)
-CAPTURE="./capture-pi"               # capture executable
+COMM="./comm-pi"                        # comm executable (must be executable)
+CAPTURE="./capture-pi"                  # capture executable
 FFMPEG_BIN="${FFMPEG_BIN:-ffmpeg}"
+OUT_PATH="$HOME/app/videos/"            # Modify out path as needed
 TMP_PREFIX="tmp_"
-COMM_WAIT_TIMEOUT=1               # seconds to wait for comm to exit after capture ends
+COMM_WAIT_TIMEOUT=1                     # seconds to wait for comm to exit after capture ends
 
 
 # Start comm in background (if it exists)
@@ -22,16 +23,13 @@ fi
 
 # find next available sequential tmp filename: tmp_1.mp4, tmp_2.mp4, ...
 seq=1
-while [ -e "${TMP_PREFIX}${seq}.mp4" ]; do
+while [ -e "${OUT_PATH}${TMP_PREFIX}${seq}.mp4" ]; do
     seq=$((seq + 1))
 done
-outfile="${TMP_PREFIX}${seq}.mp4"
+outfile="${OUT_PATH}${TMP_PREFIX}${seq}.mp4"
 echo "Recording to ${outfile} ..."
 
-
 # Run the capture pipeline (blocks until finished)
-# "$CAPTURE" | "$FFMPEG_BIN" -f v4l2 -input_format mjpeg -video_size 640x480 -framerate 30 -i - \
-#     -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "$outfile"
 "$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -i - -c copy "$outfile"
 
 
