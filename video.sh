@@ -2,8 +2,8 @@
 set -u
 
 # Configuration
-COMM="./comm"                     # comm executable (must be executable)
-CAPTURE="./capture"               # capture executable
+COMM="./comm-pi"                     # comm executable (must be executable)
+CAPTURE="./capture-pi"               # capture executable
 FFMPEG_BIN="${FFMPEG_BIN:-ffmpeg}"
 TMP_PREFIX="tmp_"
 COMM_WAIT_TIMEOUT=1               # seconds to wait for comm to exit after capture ends
@@ -30,8 +30,11 @@ echo "Recording to ${outfile} ..."
 
 
 # Run the capture pipeline (blocks until finished)
-"$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -framerate 30 -i - \
+# "$CAPTURE" | "$FFMPEG_BIN" -f v4l2 -input_format mjpeg -video_size 640x480 -framerate 30 -i - \
+#     -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "$outfile"
+"$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -i - \
     -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "$outfile"
+
 
 
 # After capture ends, decide whether to rename based on comm's status

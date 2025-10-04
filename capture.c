@@ -68,13 +68,13 @@ static int SetupFormat(struct v4l2_format *fmt, __u32 width, __u32 height)
     return 0;
 }
 
-static int SetupFrameRate(int fd, __u32 numerator, __u32 denominator)
+static int SetupFrameRate(int fd_vid, __u32 numerator, __u32 denominator)
 {
     struct v4l2_streamparm parm = {0};
     parm.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     parm.parm.capture.timeperframe.numerator = numerator;      // e.g. 1/30 for 30 fps
     parm.parm.capture.timeperframe.denominator = denominator;
-    if (ioctl(fd, VIDIOC_S_PARM, &parm) < 0) {
+    if (ioctl(fd_vid, VIDIOC_S_PARM, &parm) < 0) {
         perror("VIDIOC_S_PARM");
         return -1;
     }
@@ -89,7 +89,7 @@ static void PrintSetup(int fd_vid)
     memset(&fmt, 0, sizeof(fmt));
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (ioctl(fd, VIDIOC_G_FMT, &fmt) < 0) {
+    if (ioctl(fd_vid, VIDIOC_G_FMT, &fmt) < 0) {
         perror("VIDIOC_G_FMT");
     } else {
         printf("Format:\n");
@@ -108,7 +108,7 @@ static void PrintSetup(int fd_vid)
     memset(&parm, 0, sizeof(parm));
     parm.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (ioctl(fd, VIDIOC_G_PARM, &parm) < 0) {
+    if (ioctl(fd_vid, VIDIOC_G_PARM, &parm) < 0) {
         perror("VIDIOC_G_PARM");
     } else {
         printf("FPS: %u/%u (%.2f fps)\n",
@@ -238,11 +238,13 @@ static void _atexit_(void)
 
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) 
+{
     //setup ctrl+c handler
     signal(SIGINT, handle_sigint);
     //handle cleanup at exit
     atexit(_atexit_);
+
 
     // Handle command line options
     HandleOptions(argc, argv);

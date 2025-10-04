@@ -68,7 +68,7 @@ static int process_message(const char *msg)
     //fetch "time" key from JSON and set system time
     char *timeString = json_search(msg, "time");
     struct tm tm_val = {0};
-    if (parse_datetime(msg, &tm_val) == 0) {
+    if (parse_datetime(timeString, &tm_val) == 0) {
         if (set_system_time(&tm_val) == 0) {
             printf("System time updated: %s\n", msg);
             return EXIT_SUCCESS;
