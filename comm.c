@@ -21,6 +21,7 @@
 #include "uart/uart.h"
 #include "util/json_wrapper.h"
 
+#define BAUD B115200
 
 #define READ_BUFFER_SIZE 512        // accumulation of message buffer size
 #define WRITE_BUFFER_SIZE 128       // not used yet
@@ -92,13 +93,12 @@ static void _atexit() {
 /// @return EXIT_SUCCESS on successful processing
 int main() {
     const char *uart_device = "/dev/ttyS0";  // change as needed
-    int baudrate = B115200;
 
     //setup cleanup handler
     atexit(_atexit);
 
     // Open UART
-    if (uart_open(uart_device, baudrate) != 0) 
+    if (uart_open(uart_device, BAUD) != 0) 
         return EXIT_FAILURE;
 
     char buffer[READ_BUFFER_SIZE];   // accumulation buffer

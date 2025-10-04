@@ -5,7 +5,7 @@ set -u
 COMM="./comm-pi"                        # comm executable (must be executable)
 CAPTURE="./capture-pi"                  # capture executable
 FFMPEG_BIN="${FFMPEG_BIN:-ffmpeg}"
-OUT_PATH="$HOME/app/videos/"            # Modify out path as needed
+OUT_PATH="/home/champ/app/videos/"         # Modify out path as needed
 TMP_PREFIX="tmp_"
 COMM_WAIT_TIMEOUT=1                     # seconds to wait for comm to exit after capture ends
 
@@ -13,7 +13,7 @@ COMM_WAIT_TIMEOUT=1                     # seconds to wait for comm to exit after
 # Start comm in background (if it exists)
 COMM_PID=""
 if [ -x "$COMM" ]; then
-    "$COMM" &
+    sudo "$COMM" &
     COMM_PID=$!
     echo "Started comm (pid $COMM_PID)"
 else
@@ -31,8 +31,6 @@ echo "Recording to ${outfile} ..."
 
 # Run the capture pipeline (blocks until finished)
 "$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -i - -c copy "$outfile"
-
-
 
 
 # After capture ends, decide whether to rename based on comm's status

@@ -3,7 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <termios.h>
 #include <time.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -14,7 +13,7 @@ static int fd = -1;
 
 
 // Configure UART
-int uart_open(const char *device, int baudrate) {
+int uart_open(const char *device, speed_t baudrate) {
     fd = open(device, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0) {
         perror("open");
@@ -31,18 +30,16 @@ int uart_open(const char *device, int baudrate) {
     cfsetospeed(&tty, baudrate);
     cfsetispeed(&tty, baudrate);
 
-    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8; // 8-bit chars
-    tty.c_iflag &= ~IGNBRK;                     // disable break processing
-    tty.c_lflag = 0;                            // no signaling chars, no echo
-    tty.c_oflag = 0;                            // no remapping, no delays
-    tty.c_cc[VMIN]  = 1;                        // read blocks until 1 byte arrives
-    tty.c_cc[VTIME] = 5;                        // 0.5 seconds read timeout
+    tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8;
+    tty.c_cflag |= (CLOCAL | CREAD);
+    tty.c_cflag &= ~(PARENB | PARODD | CSTOPB | CRTSCTS);
 
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY);     // shut off xon/xoff ctrl
-    tty.c_cflag |= (CLOCAL | CREAD);            // ignore modem controls, enable reading
-    tty.c_cflag &= ~(PARENB | PARODD);          // shut off parity
-    tty.c_cflag &= ~CSTOPB;
-    tty.c_cflag &= ~CRTSCTS;
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY | ICRNL | INLCR);
+    tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+    tty.c_oflag &= ~OPOST;
+
+    tty.c_cc[VMIN]  = 1;
+    tty.c_cc[VTIME] = 1; // 0.1s timeout
 
     if (tcsetattr(fd, TCSANOW, &tty) != 0) {
         perror("tcsetattr");
