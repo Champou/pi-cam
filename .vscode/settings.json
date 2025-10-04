@@ -2,6 +2,7 @@
     "files.associations": {
         "string.h": "c",
         "types.h": "c",
-        "uart.h": "c"
+        "uart.h": "c",
+        "cstdlib": "c"
     }
 }
