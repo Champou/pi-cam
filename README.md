@@ -1,8 +1,8 @@
 
 PROJECT SETUP
 ===========================
-This project uses Makefile for compilation.
-All compilation options for cross-compile are there :
+This project uses Makefile for compilation.\\
+All compilation options for cross-compile are there :\\
 - make pi (build for pi zero 2 w)
 - make piz (build for pi zero)
 - make clean (clean project outputs)
@@ -19,7 +19,12 @@ PROJECT Architechture
         you may modify message decoding to support more configurations
 - video.sh : shellscript that handles both executables, launches comm and capture and once capture is done, modifies video file name to match date&time
 
-Captured frames are mjpeg format
-Captured frames are piped into ffmpeg to handle mp4 file creation
-No codecs are used (h.264 is too cpu-heavy for raspberry pi zero), hence the -c copy option
+Captured frames are mjpeg format\\
+Captured frames are piped into ffmpeg to handle mp4 file creation\\
+No codecs are used (h.264 is too cpu-heavy for raspberry pi zero), hence the -c copy option\\
 
+VSCode
+===========================
+task.json has "Build and Deploy to Pi" for quick clean, build and sync using scp\\
+You will need to update the pi's adress and ideally configure an ssh key so that you don't need to login everytime\\
+By default, task uses "pi zero" config. You may modify the task to suit your needs depending on the pi model.
