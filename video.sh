@@ -32,8 +32,8 @@ echo "Recording to ${outfile} ..."
 # Run the capture pipeline (blocks until finished)
 # "$CAPTURE" | "$FFMPEG_BIN" -f v4l2 -input_format mjpeg -video_size 640x480 -framerate 30 -i - \
 #     -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "$outfile"
-"$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -i - \
-    -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p "$outfile"
+"$CAPTURE" | "$FFMPEG_BIN" -f mjpeg -i - -c copy "$outfile"
+
 
 
 
